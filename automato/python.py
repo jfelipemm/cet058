@@ -35,6 +35,18 @@ def retornaToken(texto):
         return "<divisão,>"
     elif (texto == "="):
         return "<igualdade,>"
+    elif (texto == "<"):
+        return "<menor,>"
+    elif (texto == ">"):
+        return "<maior,>"
+    elif (texto == "!="):
+        return "<diferente,>"
+    elif (texto == "&&"):
+        return "<AND,>"
+    elif (texto == "||"):
+        return "<OR,>"
+    elif (texto == "\n"):
+        return "<EOL,>"
     else:
         return "<undefined>"
         
