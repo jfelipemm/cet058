@@ -34,11 +34,17 @@ def retornaToken(texto):
     elif (texto == "/"):
         return "<divisão,>"
     elif (texto == "="):
-        return "<igualdade,>"
+        return "<atribuição,>"
     elif (texto == "<"):
         return "<menor,>"
     elif (texto == ">"):
         return "<maior,>"
+    elif (texto == ">="):
+        return "<maior-igual,>"
+    elif (texto == "<="):
+        return "<menor-igual,>"
+    elif (texto == "=="):
+        return "<igualdade,>"
     elif (texto == "!="):
         return "<diferente,>"
     elif (texto == "&&"):
