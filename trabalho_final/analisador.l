@@ -17,6 +17,7 @@ TIPO int|float|double|char|string
 
 /* Início das Regras */
 %%
+"if"        {return IF;}
 {NUMBER}    {strncpy(yylval.simbolo, yytext, 50); return NUM;}
 {TIPO}      {strncpy(yylval.simbolo, yytext, 50); return TIPO;}
 {ID}        {strncpy(yylval.simbolo, yytext, 50); return ID;}
@@ -28,7 +29,15 @@ TIPO int|float|double|char|string
 "\("         {return APAR;}
 "\)"         {return FPAR;}
 "\n"         {return EOL;}
-"="         {return EQ;}
+"="         {return ATR;}
+"=="         {return EQ;}
+">="         {return GEQT;}
+"<="         {return LEQT;}
+">"         {return GT;}
+"<"         {return LT;}
+"!="         {return DIF;}
+"&&"         {return AND;}
+"||"        {return OR;}
 
 %%
 /* Fim das Regras */

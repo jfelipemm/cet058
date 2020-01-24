@@ -61,7 +61,16 @@ void inserir_na_tabela_de_simbolos(RegistroTS);
 %token ID
 %token TIPO
 %token PV
+%token ATR
+%token IF
 %token EQ
+%token GEQT
+%token LEQT
+%token GT
+%token LT
+%token DIF
+%token AND
+%token OR
 
 %type<no> termo
 %type<no> fator
@@ -69,14 +78,28 @@ void inserir_na_tabela_de_simbolos(RegistroTS);
 %type<number> exp
 %type<number> dec
 %type<number> atr
-%type<simbolo> TIPO  
+%type<simbolo> TIPO
 %type<simbolo> NUM
 %type<simbolo> MUL
 %type<simbolo> DIV
 %type<simbolo> SUB
 %type<simbolo> ADD
+%type<simbolo> APAR
+%type<simbolo> FPAR
 %type<simbolo> ID
 %type<simbolo> PV
+%type<simbolo> ATR
+%type<simbolo> IF
+%type<no> cond;
+%type<no> comp;
+%type<simbolo> EQ;
+%type<simbolo> GEQT;
+%type<simbolo> LEQT;
+%type<simbolo> GT;
+%type<simbolo> LT;
+%type<simbolo> DIF;
+%type<simbolo> AND;
+%type<simbolo> OR;
 
 
 %%
@@ -85,11 +108,51 @@ void inserir_na_tabela_de_simbolos(RegistroTS);
 prog: EOL {
             imprimir_tabela_de_simbolos(tabela_de_simbolos);
     }
-   | dec | exp | atr
+   | dec | exp | atr | if
    | prog dec 
    | prog exp
    | prog atr
+   | prog if
 ;
+
+if: IF APAR cond FPAR EOL {
+        imprimir_arvore($3);printf("\n\n");
+    }
+    ;
+
+cond: termo comp termo {
+        No** filhos = (No**) malloc(sizeof(No*)*3);
+        filhos[0] = $1;
+        filhos[1] = $2;
+        filhos[2] = $3;
+        No* raiz_exp = novo_no("cond", filhos, 3); 
+        $$ = raiz_exp;
+    }
+    | cond AND cond {
+        No** filhos = (No**) malloc(sizeof(No*)*3);
+        filhos[0] = $1;
+        filhos[1] = novo_no("&&", NULL, 0);
+        filhos[2] = $3;
+        No* raiz_exp = novo_no("cond", filhos, 3); 
+        $$ = raiz_exp;
+    }
+    | cond OR cond {
+        No** filhos = (No**) malloc(sizeof(No*)*3);
+        filhos[0] = $1;
+        filhos[1] = novo_no("||", NULL, 0);
+        filhos[2] = $3;
+        No* raiz_exp = novo_no("cond", filhos, 3); 
+        $$ = raiz_exp;
+    }
+    ;
+
+comp: EQ {$$ = novo_no($1, NULL, 0);}
+    | GEQT {$$ = novo_no($1, NULL, 0);}
+    | LEQT {$$ = novo_no($1, NULL, 0);}
+    | GT {$$ = novo_no($1, NULL, 0);}
+    | LT {$$ = novo_no($1, NULL, 0);}
+    | DIF {$$ = novo_no($1, NULL, 0);}
+    ;
 
 dec: TIPO ID PV EOL {
             int var_existe = verifica_entrada_na_tabela_de_simbolos($2);
@@ -112,8 +175,13 @@ dec: TIPO ID PV EOL {
         }
     ;
 
-atr: ID EQ termo PV EOL {
-        printf("Testando atribuicao\n");
+atr: ID ATR termo PV EOL {
+        No** filhos = (No**) malloc(sizeof(No*)*3);
+        filhos[0] = $1;
+        filhos[1] = novo_no("=", NULL, 0);
+        filhos[2] = $3;
+        No* raiz_exp = novo_no("atr", filhos, 3);
+        imprimir_arvore(raiz_exp);printf("\n\n");
         $$ = 2;
     }
     ;
@@ -167,8 +235,7 @@ fator: const
                         }
      ;
 
-const: NUM { $$ = novo_no($1, NULL, 0);
- }  
+const: NUM { $$ = novo_no($1, NULL, 0);}  
     |  ID  { 
                int var_existe = verifica_entrada_na_tabela_de_simbolos($1);
                if(var_existe) {
