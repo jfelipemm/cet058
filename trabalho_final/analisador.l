@@ -13,11 +13,14 @@
 /* Definições */
 NUMBER [0-9]+
 ID [a-zA-Z_][a-zA-Z_]*
-TIPO int|float|double|char|string
+TIPO int|float|double|char
+VETOR [a-zA-Z_][a-zA-Z_]*\[[1-9][0-9]*\]
 
 /* Início das Regras */
 %%
 "if"        {return IF;}
+"else"        {return ELSE;}
+"for"        {return FOR;}
 {NUMBER}    {strncpy(yylval.simbolo, yytext, 50); return NUM;}
 {TIPO}      {strncpy(yylval.simbolo, yytext, 50); return TIPO;}
 {ID}        {strncpy(yylval.simbolo, yytext, 50); return ID;}
@@ -38,6 +41,12 @@ TIPO int|float|double|char|string
 "!="         {return DIF;}
 "&&"         {return AND;}
 "||"        {return OR;}
+"\{"         {return ACH;}
+"\}"         {return FCH;}
+"\["         {return ACOL;}
+"\]"         {return FCOL;}
+","         {return VIRG;}
+{VETOR}        {strncpy(yylval.simbolo, yytext, 50); return VET;}
 
 %%
 /* Fim das Regras */

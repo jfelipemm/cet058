@@ -58,14 +58,22 @@ extern int yydebug;
     PV = 268,
     ATR = 269,
     IF = 270,
-    EQ = 271,
-    GEQT = 272,
-    LEQT = 273,
-    GT = 274,
-    LT = 275,
-    DIF = 276,
-    AND = 277,
-    OR = 278
+    ELSE = 271,
+    FOR = 272,
+    EQ = 273,
+    GEQT = 274,
+    LEQT = 275,
+    GT = 276,
+    LT = 277,
+    DIF = 278,
+    AND = 279,
+    OR = 280,
+    ACH = 281,
+    FCH = 282,
+    ACOL = 283,
+    FCOL = 284,
+    VIRG = 285,
+    VET = 286
   };
 #endif
 
@@ -80,7 +88,7 @@ union YYSTYPE
     char simbolo[50];
     struct No* no;
 
-#line 84 "parser.tab.h" /* yacc.c:1909  */
+#line 92 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

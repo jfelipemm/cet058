@@ -23,7 +23,7 @@ enum tipos{INT, FLOAT, CHAR, STRING};
 typedef struct registro_da_tabela_de_simbolo {
     char token[50];
     char lexema[50];
-    int tipo;
+    char* tipo;
     int endereco;
 } RegistroTS;
 
@@ -63,6 +63,8 @@ void inserir_na_tabela_de_simbolos(RegistroTS);
 %token PV
 %token ATR
 %token IF
+%token ELSE
+%token FOR
 %token EQ
 %token GEQT
 %token LEQT
@@ -71,6 +73,12 @@ void inserir_na_tabela_de_simbolos(RegistroTS);
 %token DIF
 %token AND
 %token OR
+%token ACH
+%token FCH
+%token ACOL
+%token FCOL
+%token VIRG
+%token VET
 
 %type<no> termo
 %type<no> fator
@@ -78,6 +86,7 @@ void inserir_na_tabela_de_simbolos(RegistroTS);
 %type<number> exp
 %type<number> dec
 %type<number> atr
+%type<number> atr2
 %type<simbolo> TIPO
 %type<simbolo> NUM
 %type<simbolo> MUL
@@ -90,6 +99,8 @@ void inserir_na_tabela_de_simbolos(RegistroTS);
 %type<simbolo> PV
 %type<simbolo> ATR
 %type<simbolo> IF
+%type<simbolo> ELSE
+%type<simbolo> FOR
 %type<no> cond;
 %type<no> comp;
 %type<simbolo> EQ;
@@ -100,6 +111,12 @@ void inserir_na_tabela_de_simbolos(RegistroTS);
 %type<simbolo> DIF;
 %type<simbolo> AND;
 %type<simbolo> OR;
+%type<simbolo> ACH
+%type<simbolo> FCH
+%type<simbolo> ACOL
+%type<simbolo> FCOL
+%type<simbolo> VIRG
+%type<simbolo> VET
 
 
 %%
@@ -108,17 +125,22 @@ void inserir_na_tabela_de_simbolos(RegistroTS);
 prog: EOL {
             imprimir_tabela_de_simbolos(tabela_de_simbolos);
     }
-   | dec | exp | atr | if
+   | dec | exp | atr | if | for
    | prog dec 
    | prog exp
    | prog atr
    | prog if
+   | prog for
 ;
 
-if: IF APAR cond FPAR EOL {
-        imprimir_arvore($3);printf("\n\n");
+if: IF APAR cond FPAR ACH EOL prog FCH EOL {
+    }
+    | IF APAR cond FPAR ACH EOL prog FCH ELSE ACH EOL prog FCH EOL {
     }
     ;
+
+for: FOR APAR atr2 PV cond PV exp2 FPAR ACH EOL prog FCH EOL {
+    };
 
 cond: termo comp termo {
         No** filhos = (No**) malloc(sizeof(No*)*3);
@@ -127,6 +149,7 @@ cond: termo comp termo {
         filhos[2] = $3;
         No* raiz_exp = novo_no("cond", filhos, 3); 
         $$ = raiz_exp;
+        imprimir_arvore(raiz_exp);printf("\n\n");
     }
     | cond AND cond {
         No** filhos = (No**) malloc(sizeof(No*)*3);
@@ -135,6 +158,7 @@ cond: termo comp termo {
         filhos[2] = $3;
         No* raiz_exp = novo_no("cond", filhos, 3); 
         $$ = raiz_exp;
+        imprimir_arvore(raiz_exp);printf("\n\n");
     }
     | cond OR cond {
         No** filhos = (No**) malloc(sizeof(No*)*3);
@@ -143,15 +167,16 @@ cond: termo comp termo {
         filhos[2] = $3;
         No* raiz_exp = novo_no("cond", filhos, 3); 
         $$ = raiz_exp;
+        imprimir_arvore(raiz_exp);printf("\n\n");
     }
     ;
 
-comp: EQ {$$ = novo_no($1, NULL, 0);}
-    | GEQT {$$ = novo_no($1, NULL, 0);}
-    | LEQT {$$ = novo_no($1, NULL, 0);}
-    | GT {$$ = novo_no($1, NULL, 0);}
-    | LT {$$ = novo_no($1, NULL, 0);}
-    | DIF {$$ = novo_no($1, NULL, 0);}
+comp: EQ {$$ = novo_no("==", NULL, 0);}
+    | GEQT {$$ = novo_no(">=", NULL, 0);}
+    | LEQT {$$ = novo_no("<=", NULL, 0);}
+    | GT {$$ = novo_no(">", NULL, 0);}
+    | LT {$$ = novo_no("<", NULL, 0);}
+    | DIF {$$ = novo_no("!=", NULL, 0);}
     ;
 
 dec: TIPO ID PV EOL {
@@ -160,9 +185,35 @@ dec: TIPO ID PV EOL {
                 RegistroTS registro;
                 strncpy(registro.token, "ID", 50);
                 strncpy(registro.lexema, $2, 50);
-                registro.tipo = $1;
+                char* tipo = malloc(sizeof(char) * 50);
+                strcpy(tipo, $1);
+                registro.tipo = tipo;
                 registro.endereco = prox_mem_livre;
-                prox_mem_livre += 4;
+                prox_mem_livre += sizeOfTipo($1);
+                inserir_na_tabela_de_simbolos(registro);
+                $$ = 1;
+            }
+            else {
+                printf("Erro! Múltiplas declarações de variável");
+                exit(1);
+            }
+            imprimir_arvore($2);printf("\n\n");
+            imprimir_tabela_de_simbolos(tabela_de_simbolos);
+        }
+    | TIPO VET PV EOL {
+            char* vetor = malloc(sizeof(char) * 50);
+            strcpy(vetor, $2);
+            char* var = strtok($2, "["); 
+            int var_existe = verifica_entrada_na_tabela_de_simbolos(var);
+            if (!var_existe) { 
+                RegistroTS registro;
+                strncpy(registro.token, "VET", 50);
+                strncpy(registro.lexema, var, 50);
+                char* tipo = malloc(sizeof(char) * 50);
+                strcpy(tipo, $1);
+                registro.tipo = tipo;
+                registro.endereco = prox_mem_livre;
+                prox_mem_livre += sizeOfTipo($1) * sizeOfVetor(vetor);
                 inserir_na_tabela_de_simbolos(registro);
                 $$ = 1;
             }
@@ -186,6 +237,16 @@ atr: ID ATR termo PV EOL {
     }
     ;
 
+atr2: ID ATR termo {
+        No** filhos = (No**) malloc(sizeof(No*)*3);
+        filhos[0] = $1;
+        filhos[1] = novo_no("=", NULL, 0);
+        filhos[2] = $3;
+        No* raiz_exp = novo_no("atr", filhos, 3);
+        imprimir_arvore(raiz_exp);printf("\n\n");
+        $$ = 2;
+    }
+
 exp: 
     | PV EOL {
         imprimir_tabela_de_simbolos(tabela_de_simbolos);
@@ -197,6 +258,13 @@ exp:
                             $$ = 3;
                         }
     ;
+
+exp2: termo {
+        imprimir_arvore($1);printf("\n\n");
+    }
+    | exp termo {
+        imprimir_arvore($2);printf("\n\n");
+    }
 
 termo: fator               
    | termo ADD fator       { 
@@ -246,6 +314,26 @@ const: NUM { $$ = novo_no($1, NULL, 0);}
                    exit(1);
                }
            }
+    | VET { 
+            char* vetor = malloc(sizeof(char) * 50);
+            strcpy(vetor, $1);
+            for (int i = 0; i <= strlen(vetor); i++) {
+                if (vetor[i] == '[') {
+                    vetor[i] = '(';
+                } else if (vetor[i] == ']') {
+                    vetor[i] = ')';
+                }
+            }
+            char* var = strtok($1, "[");
+            int var_existe = verifica_entrada_na_tabela_de_simbolos(var);
+            if(var_existe) {
+                $$ = novo_no(vetor, NULL, 0);
+            }
+            else {
+                printf("Variável %s não declarada;", var);
+                exit(1);
+            }
+    }
 %%
 
 /* Código C geral, será adicionado ao final do código fonte 
@@ -309,13 +397,34 @@ void inserir_na_tabela_de_simbolos(RegistroTS registro) {
 void imprimir_tabela_de_simbolos(RegistroTS *tabela_de_simbolos) {
     printf("----------- Tabela de Símbolos ---------------\n");
     for(int i = 0; i < prox_posicao_livre; i++) {
-        printf("{%s} -> {%s} -> {%d} -> {%x}\n", tabela_de_simbolos[i].token, \
+        printf("{%s} -> {%s} -> {%s} -> {%x}\n", tabela_de_simbolos[i].token, \
                                                tabela_de_simbolos[i].lexema, \
                                                tabela_de_simbolos[i].tipo, \
                                                tabela_de_simbolos[i].endereco);
         printf("---------\n");
     }
     printf("----------------------------------------------\n");
+}
+
+int sizeOfTipo(char* tipo) {
+    if (strcmp("int", tipo) == 0) {
+        return 4;
+    } else if (strcmp("float", tipo) == 0) {
+        return 4;
+    } else if (strcmp("double", tipo) == 0) {
+        return 8;
+    } else if (strcmp("char", tipo) == 0) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int sizeOfVetor(char* var) {
+    char* token = strtok(var, "[");
+    token = strtok(NULL, " ");
+    token = strtok(token, "]");
+    return atoi(token);
 }
 
 int main(int argc, char** argv) {

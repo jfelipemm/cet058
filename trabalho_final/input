@@ -1,10 +1,15 @@
-#include <"stdio.h">
-
-int main() {
-  int x = 9;
-  unsigned int = 10;
-
-  if (x > 10) {
-    print("X é maior que dez!")
-  }
+char x;
+x = 10;
+int k[45];
+k[65] + 21;
+if (x > 10) {
+  double y;
+  y = 23;
+} else {
+  int z;
+  z = 2;
+}
+for (x = 1; 3 <= 4; 2 + 2) {
+  x = 12;
+  2*9+4-5;
 }
