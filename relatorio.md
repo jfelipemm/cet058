@@ -2,8 +2,11 @@
 
 - Introdução
 
-Um compilador é um programa que traduz outro programa escrito em linguagem de alto nível, isto é, aquela que é entendida pelo humano, para a linguagem de máquina, isto é, linguagem entendida pela parte física do computador. O compilador geralmente é dividido em duas etapas: a tabela de símbolos e o montador.
-A tabela de símbolos é onde fica armazenados os tokens da linguagem separados por *token*, lexema(nome da variável), tipo da variável e o endereço na memória de onde aquela variável está armazenada. O montador é a parte que realmente faz a tradução do código-fonte para linguagem de máquina. A partir da tabela de símbolos se retira as informações necessárias para que o montador faça a correspondência para a linguagem assembly para que esta seja traduzida para a linguagem binária ou hexadecimal. No presente trabalho apresentaremos a primeira etapa da construção do compilador, a tabela de símbolos.
+Um compilador é um programa que traduz outro programa escrito em linguagem de alto nível, isto é, aquela que é entendida pelo humano, para a linguagem de máquina, isto é, linguagem entendida pela parte física do computador. 
+
+O compilador geralmente é dividido em duas etapas: a tabela de símbolos e o montador.A tabela de símbolos é onde fica armazenados os tokens da linguagem separados por *token*, lexema(nome da variável), tipo da variável e o endereço na memória de onde aquela variável está armazenada. O montador é a parte que realmente faz a tradução do código-fonte para linguagem de máquina. A partir da tabela de símbolos se retira as informações necessárias para que o montador faça a correspondência para a linguagem assembly para que esta seja traduzida para a linguagem binária ou hexadecimal. No presente trabalho apresentaremos a primeira etapa da construção do compilador, a tabela de símbolos.
+
+
 Contudo para que essa tabela de símbolos seja implementada antes se precisa fazer duas analise que verificaram no código a presença de elementos importantes para que seja estabelecida a tabela de símbolos. Essas análises são as análise léxica e análise sintática. A primeira permite que  sejam identificados os *tokens*, como citado anteriormente, que são as palavras que possuem algum significado para a linguagem e tem um determinado papel para que a ação que código-fonte deseja fazer seja realizada, como por exemplo, se é um número ou uma operação matemática ou se o tipo da variável.
 (inserir imagem)
 Neste momento é feito a declaração de quais tokens essa linguagem possui estabelecendo assim um padrão na linguagem. 
