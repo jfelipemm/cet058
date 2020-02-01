@@ -12,25 +12,33 @@ Já na análise sintática é feita uma varredura no código para encontrar os t
 
 - Ferramentas
 
- - Bison
+    1. Bison
 
 O Bison é um gerador análise de uso geral open-source, isto é um software livre, escrito para o projeto GNU que converte uma sequência gramatical para uma gramática livre de contexto em um programa em C para analisar essa cadeia de caracteres. O analisador Bison é um analisador de baixo para cima. Ele tenta com voltas e reduções , reduzir toda cadeia de entrada para um único agrupamento cujo o símbolo é o símbolo inicial da gramática. 
 
 
 Sua implementação é feita da seguinte forma: primeiro é criado um arquivo em Bison, cuja a extensão *.y, passando pelo analisador Bison sua saída será um arquivo com a extensão em *.tab.c. Este arquivo *.tab.c é compilado no compilador C e o resultado será um arquivo de saída *a.out*, esse arquivo é dado para entrada do *parse* escrito, e seu resultado é a árvore de *parsing*. No presente trabalho sua utilização foi bastante útil na escrita do código do parser, com a extensão parser.y, para que a sua saída seja a tabela de simbolos e a árvore sintática.
 
- - Flex
+2. Flex
 
 
  O Flex é uma ferramenta semelhante ao Bison mas se difere pelo fato dele estar na parte do analisador léxico do programa onde são estabelecidos os tokens e as regras da linguagem do programa a ser compilado. Permite também que seja colocado trechos de códigos da linguagem C no corpo do programa e para separar o código flex do código C usa-se como delimitadores dois símbolos de porcentagem (%%). Os arquivos flex quem como extensão *.l. O código flex gera um outro programa em C (lex.yy.c) que é vinculada biblioteca -lfl, logo em seguida é executado.
 
- - VsCode
+3. VsCode
 
-O visual Studio Code é uma IDE de código-fonte desenvolvido pela Microsoft para os sietams operacionais Windons, Linux e macOS. Possuiu suporte a diversas linguagens de programação como C, C#, Python 
+O visual Studio Code é uma IDE(Ambiente Integrado de desenvolvimento) de código-fonte desenvolvido pela Microsoft para os sistemas operacionais Windons, Linux e macOS. Possuiu suporte a diversas linguagens de programação como C, C#, Python, PHP entre outros.
 
- - Credux
+4. Credux
 
-Introduzir as ferramentas utilizadas, suas características e possíveis uso, especialmente o Bison e o Flex.
+Credux , se lê "C redux", foi uam linguagem criada para fins desse trabalho para ser a entrada de dados do compilador. Seus padrões de linguagens recorda um pouco da linguagem C, contudo possue algumas diferenças consideraveis:
+1. Não possui funções, logo não existe a função main();
+2. Sua estrutura de execução é top-down;
+3. O tipo de variavél string não pertece a essa linguagem. Para escrever uma palavra com mais de dois caracteres pode-se usar um vetor do tipo char;
+4. Não é permitido fazer uma atribuição após uma expressão;
+
+A linguagem é ideal para quem esta inciando na programação pois visa oferecer ao programador um conhecimento dos tipos de variáveis, expressões aritméticas básicas, expressões relacionais e lógicas, estrutura de seleção, uma estrutura de repetição e vetores sem que se preocupe com funções neste primeiro momento de sua aprendizagem.
+
+
 
 
 
@@ -45,7 +53,7 @@ especialmente o que diz respeito à análise léxica e sintática, como tokens e
 
 referencias
 [Link](https://www.oreilly.com/library/view/flex-bison/9780596805418/ch01.html)
-https://pt.wikipedia.org/wiki/GNU_bison
-http://alumni.cs.ucr.edu/~lgao/teaching/bison.html
+[Bision](https://pt.wikipedia.org/wiki/GNU_bison)
+[BISON](http://alumni.cs.ucr.edu/~lgao/teaching/bison.html)
 
 
